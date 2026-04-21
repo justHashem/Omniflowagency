@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Omni-Flow Digital | Zero-Bloat Web Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#04040a;--bg2:#080814;--cyan:#00e5ff;--orange:#ff6b2b;--white:#f0f4ff;--muted:#5a5f7a;--card:rgba(255,255,255,0.03);--border:rgba(0,229,255,0.12);--glow:0 0 40px rgba(0,229,255,0.15);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;}
+#cursor{width:12px;height:12px;background:var(--cyan);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;mix-blend-mode:screen;}
+#cursor-ring{width:36px;height:36px;border:1px solid rgba(0,229,255,0.4);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:width 0.2s,height 0.2s;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 60px;background:rgba(4,4,10,0.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:background 0.3s;}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:18px;color:var(--cyan);letter-spacing:2px;text-decoration:none;}
+.nav-logo span{color:var(--orange);}
+.nav-links{display:flex;gap:36px;align-items:center;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;font-family:'Syne',sans-serif;font-weight:600;}
+.nav-links a:hover{color:var(--cyan);}
+.nav-cta{background:var(--cyan)!important;color:var(--bg)!important;padding:10px 24px!important;border-radius:2px;font-weight:700!important;}
+.nav-cta:hover{background:#fff!important;}
+#hero{min-height:100vh;display:flex;align-items:center;padding:140px 60px 80px;position:relative;z-index:1;}
+.hero-inner{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,229,255,0.07);border:1px solid var(--border);padding:6px 16px;border-radius:100px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--cyan);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:28px;animation:fadeUp 0.8s ease both;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+h1{font-family:'Orbitron',sans-serif;font-size:clamp(38px,5vw,68px);font-weight:900;line-height:1.05;letter-spacing:-1px;animation:fadeUp 0.8s 0.1s ease both;}
+h1 .accent{color:var(--cyan);}
+h1 .accent2{color:var(--orange);}
+.hero-sub{margin-top:20px;font-size:17px;line-height:1.7;color:var(--muted);max-width:480px;animation:fadeUp 0.8s 0.2s ease both;}
+.hero-actions{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap;animation:fadeUp 0.8s 0.3s ease both;}
+.btn-primary{background:var(--cyan);color:var(--bg);padding:16px 36px;border-radius:2px;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:all 0.2s;border:none;cursor:none;box-shadow:0 0 30px rgba(0,229,255,0.3);display:inline-block;}
+.btn-primary:hover{background:#fff;box-shadow:0 0 50px rgba(0,229,255,0.5);transform:translateY(-2px);}
+.btn-secondary{background:transparent;color:var(--white);padding:16px 36px;border-radius:2px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);transition:all 0.2s;cursor:none;display:inline-block;}
+.btn-secondary:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.05);}
+.hero-stats{display:flex;gap:40px;margin-top:48px;animation:fadeUp 0.8s 0.4s ease both;}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:var(--cyan);}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;}
+.hero-visual{animation:fadeUp 0.8s 0.2s ease both;}
+.speed-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;backdrop-filter:blur(10px);box-shadow:var(--glow);position:relative;overflow:hidden;}
+.speed-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
+.speed-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}
+.speed-title{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:10px;color:#2ecc71;letter-spacing:1px;text-transform:uppercase;font-family:'Syne',sans-serif;font-weight:700;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#2ecc71;animation:pulse 1s infinite;}
+.speed-row{margin-bottom:20px;}
+.speed-row-header{display:flex;justify-content:space-between;margin-bottom:8px;}
+.speed-label{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-family:'Syne',sans-serif;}
+.speed-value{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;}
+.speed-value.bad{color:#ff4757;}
+.speed-value.good{color:var(--cyan);}
+.speed-bar-bg{height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.speed-bar-fill{height:100%;border-radius:4px;}
+.speed-bar-fill.bad{background:linear-gradient(90deg,#ff4757,#ff6b81);}
+.speed-bar-fill.good{background:linear-gradient(90deg,var(--cyan),#00ff88);box-shadow:0 0 10px rgba(0,229,255,0.5);}
+.run-btn{width:100%;margin-top:24px;background:rgba(0,229,255,0.08);border:1px solid var(--border);color:var(--cyan);padding:14px;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;cursor:none;border-radius:4px;transition:all 0.2s;text-transform:uppercase;}
+.run-btn:hover{background:rgba(0,229,255,0.15);border-color:var(--cyan);}
+section{position:relative;z-index:1;}
+.container{max-width:1200px;margin:0 auto;padding:0 60px;}
+.section-label{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:16px;}
+.section-title{font-family:'Orbitron',sans-serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;line-height:1.1;}
+.section-sub{font-size:16px;color:var(--muted);max-width:540px;line-height:1.7;margin-top:12px;}
+#how{padding:120px 0;}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px;}
+.step-card{background:var(--card);border:1px solid var(--border);padding:40px 32px;position:relative;transition:all 0.3s;overflow:hidden;}
+.step-card:hover{border-color:rgba(0,229,255,0.3);transform:translateY(-4px);}
+.step-num{font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:rgba(0,229,255,0.08);line-height:1;margin-bottom:20px;}
+.step-icon{font-size:28px;margin-bottom:16px;}
+.step-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin-bottom:12px;}
+.step-desc{font-size:14px;color:var(--muted);line-height:1.7;}
+#pricing{padding:120px 0;background:var(--bg2);}
+.pricing-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:24px;margin-top:64px;}
+.pricing-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:48px;position:relative;overflow:hidden;transition:all 0.3s;}
+.pricing-card:hover{transform:translateY(-6px);}
+.pricing-card.featured{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.04);box-shadow:0 0 60px rgba(0,229,255,0.1);}
+.pricing-card.featured::after{content:'MOST POPULAR';position:absolute;top:20px;right:20px;background:var(--cyan);color:var(--bg);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;padding:5px 12px;border-radius:100px;font-weight:700;}
+.price-label{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.price-amount{font-family:'Orbitron',sans-serif;font-size:56px;font-weight:900;line-height:1;margin-bottom:8px;}
+.price-desc{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
+.price-features{list-style:none;margin-bottom:36px;}
+.price-features li{display:flex;align-items:center;gap:12px;font-size:14px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);color:#b0b8d0;}
+.price-features li::before{content:'→';color:var(--cyan);font-size:12px;flex-shrink:0;}
+.cashapp-box{background:rgba(0,229,255,0.06);border:1px solid var(--border);border-radius:4px;padding:16px 20px;display:flex;align-items:center;gap:12px;font-family:'Orbitron',sans-serif;font-size:14px;color:var(--cyan);margin-bottom:16px;cursor:none;transition:all 0.2s;}
+.cashapp-box:hover{background:rgba(0,229,255,0.12);border-color:var(--cyan);}
+#trust{padding:100px 0;}
+.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:64px;}
+.trust-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:32px;transition:all 0.3s;}
+.trust-card:hover{border-color:rgba(0,229,255,0.3);transform:translateY(-4px);}
+.trust-metric{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:var(--cyan);line-height:1;margin-bottom:8px;}
+.trust-metric-label{font-size:13px;color:var(--muted);line-height:1.5;}
+#contact{padding:120px 0;background:var(--bg2);}
+.contact-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:64px;}
+.contact-form{display:flex;flex-direction:column;gap:16px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;}
+.form-input{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:4px;padding:14px 18px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:all 0.2s;}
+.form-input:focus{border-color:var(--cyan);background:rgba(0,229,255,0.04);}
+.form-input::placeholder{color:var(--muted);}
+textarea.form-input{resize:vertical;min-height:120px;}
+.submit-btn{background:var(--cyan);color:var(--bg);border:none;padding:16px 32px;font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:2px;font-weight:700;text-transform:uppercase;cursor:none;border-radius:2px;transition:all 0.2s;margin-top:8px;}
+.submit-btn:hover{background:#fff;transform:translateY(-2px);}
+.contact-info{display:flex;flex-direction:column;gap:28px;}
+.contact-item{display:flex;gap:20px;align-items:flex-start;}
+.contact-icon{width:44px;height:44px;background:rgba(0,229,255,0.08);border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.contact-item-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Syne',sans-serif;margin-bottom:6px;}
+.contact-item-value{font-size:15px;color:var(--white);}
+.contact-item-value a{color:var(--cyan);text-decoration:none;}
+footer{padding:40px 60px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+.footer-logo{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--cyan);letter-spacing:2px;}
+.footer-copy{font-size:12px;color:var(--muted);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--cyan);color:var(--bg);font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;padding:14px 28px;border-radius:4px;z-index:9999;transition:transform 0.3s;pointer-events:none;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+@media(max-width:768px){
+  nav{padding:16px 24px;}
+  .nav-links{display:none;}
+  #hero{padding:120px 24px 60px;}
+  .hero-inner,.steps-grid,.pricing-grid,.trust-grid,.contact-inner{grid-template-columns:1fr;gap:32px;}
+  .container{padding:0 24px;}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:32px 24px;}
+  body{cursor:auto;}
+  #cursor,#cursor-ring{display:none;}
+}
+</style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="toast">COPIED TO CLIPBOARD</div>
+
+<nav>
+  <a class="nav-logo" href="#">OMNI<span>-</span>FLOW_</a>
+  <div class="nav-links">
+    <a href="#how">Process</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#trust">Results</a>
+    <a href="#contact" class="nav-cta">Get Demo</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><div class="badge-dot"></div>Now Serving DFW Businesses</div>
+      <h1>Build <span class="accent">Faster.</span><br/>Convert <span class="accent2">Better.</span></h1>
+      <p class="hero-sub">Zero-Bloat AI web architecture for local businesses. Stop losing customers to slow load times — your competitors already know this.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Get $20 Demo</a>
+        <a href="#how" class="btn-secondary">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">&lt;1s</div><div class="stat-label">Load Time</div></div>
+        <div><div class="stat-num">$20</div><div class="stat-label">Live Demo</div></div>
+        <div><div class="stat-num">$450–$200</div><div class="stat-label">Full Build</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="speed-card">
+        <div class="speed-header">
+          <div class="speed-title">// Performance Diagnostic</div>
+          <div class="live-badge"><div class="live-dot"></div>Live Sim</div>
+        </div>
+        <div class="speed-row">
+          <div class="speed-row-header">
+            <span class="speed-label">Standard Builder (Wix/WP)</span>
+            <span class="speed-value bad" id="val-bad">0.0s</span>
+          </div>
+          <div class="speed-bar-bg"><div class="speed-bar-fill bad" id="bar-bad" style="width:0%"></div></div>
+        </div>
+        <div class="speed-row">
+          <div class="speed-row-header">
+            <span class="speed-label">Omni-Flow Core</span>
+            <span class="speed-value good" id="val-good">0.0s</span>
+          </div>
+          <div class="speed-bar-bg"><div class="speed-bar-fill good" id="bar-good" style="width:0%"></div></div>
+        </div>
+        <div style="margin-top:24px;padding:16px;background:rgba(0,229,255,0.04);border:1px solid var(--border);border-radius:4px;">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;font-family:'Syne',sans-serif;">DIAGNOSTIC RESULT</div>
+          <div id="diag-result" style="font-family:'Orbitron',sans-serif;font-size:12px;color:var(--muted);">Click to run diagnostic...</div>
+        </div>
+        <button class="run-btn" onclick="runDiagnostic()">Run Performance Diagnostic</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// The Process</div>
+      <h2 class="section-title">Simple. Fast. Done.</h2>
+      <p class="section-sub">No long calls. No agency BS. Just results.</p>
+    </div>
+    <div class="steps-grid reveal">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">&#9889;</div>
+        <div class="step-title">Send the $20 Deposit</div>
+        <div class="step-desc">Cash App $hashstrike01. Include your business email in the notes. That's the whole kickoff — takes 30 seconds.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">&#127919;</div>
+        <div class="step-title">Get Your Live Demo</div>
+        <div class="step-desc">I build a live, interactive preview of your new site. See exactly what you're getting before committing a single dollar more.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">&#128640;</div>
+        <div class="step-title">Go Live in Days</div>
+        <div class="step-desc">Full build is $200-$450. Lightning fast, mobile-first, SEO-ready. Your $20 deposit goes toward the full price.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="pricing">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// Pricing</div>
+      <h2 class="section-title">Zero Surprises.</h2>
+      <p class="section-sub">Flat rates. No hidden fees. No retainers. No BS.</p>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="pricing-card">
+        <div class="price-label">Starter</div>
+        <div class="price-amount"><span style="font-size:24px;color:var(--muted)">$</span>20</div>
+        <div class="price-desc">Interactive Performance Demo. See your new site before you commit to a single dollar more.</div>
+        <ul class="price-features">
+          <li>Live site preview built for your business</li>
+          <li>Speed and UX comparison report</li>
+          <li>Mobile performance audit</li>
+          <li>$20 goes toward full build price</li>
+        </ul>
+        <div class="cashapp-box" onclick="copyText('$hashstrike01')">
+          <span>&#128184;</span>
+          <span>$hashstrike01 — Click to Copy</span>
+        </div>
+        <a href="mailto:hashemstriker@gmail.com" class="btn-secondary" style="display:block;text-align:center;">Email After Sending</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="price-label">Full Build</div>
+        <div class="price-amount"><span style="font-size:24px;color:var(--muted)">$</span>200<span style="font-size:24px;color:var(--muted)">-450</span></div>
+        <div class="price-desc">Complete zero-bloat architecture. Sub-1-second load times. Built to convert local customers into paying clients.</div>
+        <ul class="price-features">
+          <li>Custom design — zero templates</li>
+          <li>Sub-1s mobile load time guaranteed</li>
+          <li>SEO-optimized from day one</li>
+          <li>Contact forms and click-to-call</li>
+          <li>Google Maps integration</li>
+          <li>Managed hosting included</li>
+          <li>Free revisions for 30 days</li>
+        </ul>
+        <a href="#contact" class="btn-primary" style="display:block;text-align:center;">Start With Demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="trust">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// Why It Works</div>
+      <h2 class="section-title">The Numbers Don't Lie.</h2>
+      <p class="section-sub">This is not about pretty websites. It is about not hemorrhaging money through a slow one.</p>
+    </div>
+    <div class="trust-grid reveal">
+      <div class="trust-card">
+        <div class="trust-metric">53%</div>
+        <div class="trust-metric-label">of mobile users abandon a site that takes over 3 seconds to load. Gone. Forever.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-metric">7%</div>
+        <div class="trust-metric-label">revenue lost per second of page delay. Every slow second is a customer walking to your competitor.</div>
+      </div>
+      <div class="trust-card">
+        <div class="trust-metric">$20</div>
+        <div class="trust-metric-label">to see your full potential online. The easiest ROI decision you will make this year.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="contact">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// Contact</div>
+      <h2 class="section-title">Let's Build.</h2>
+      <p class="section-sub">Have a question before sending the demo deposit? Just ask — I reply fast.</p>
+    </div>
+    <div class="contact-inner reveal">
+<a href="https://mail.google.com/mail/?view=cm&to=hashemstriker@gmail.com&su=New Inquiry — Omni-Flow&body=Hi Hashem, I am interested in working with you!" target="_blank" class="btn-primary" style="display:block;text-align:center;font-size:18px;padding:28px 40px;letter-spacing:3px;">📧 Contact Me</a>
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">&#128231;</div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value"><a href="mailto:hashemstriker@gmail.com">hashemstriker@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">&#128184;</div>
+          <div>
+            <div class="contact-item-label">Cash App</div>
+            <div class="contact-item-value" onclick="copyText('$hashstrike01')" style="cursor:none;">
+              <span style="color:var(--cyan);">$hashstrike01</span>
+              <span style="color:var(--muted);font-size:12px;margin-left:8px;">— click to copy</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">&#128205;</div>
+          <div>
+            <div class="contact-item-label">Location</div>
+            <div class="contact-item-value">Dallas, TX — Serving all DFW</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">&#9889;</div>
+          <div>
+            <div class="contact-item-label">Response Time</div>
+            <div class="contact-item-value">Usually within a few hours</div>
+          </div>
+        </div>
+        <div style="background:rgba(0,229,255,0.04);border:1px solid var(--border);border-radius:8px;padding:28px;">
+          <div style="font-family:'Orbitron',sans-serif;font-size:12px;color:var(--cyan);margin-bottom:12px;">READY TO START RIGHT NOW?</div>
+          <div style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px;">Send <strong style="color:var(--white);">$20</strong> to <strong style="color:var(--white);">$hashstrike01</strong> on Cash App with your business email in the notes. Demo incoming.</div>
+          <button class="btn-primary" onclick="copyText('$hashstrike01')" style="border:none;width:100%;text-align:center;">Copy $hashstrike01</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">OMNI-FLOW_</div>
+  <div class="footer-copy">2026 Omni-Flow Digital // Rowlett, TX // Engineered by Hashem</div>
+</footer>
+
+<script>
+var cursor=document.getElementById('cursor');
+var ring=document.getElementById('cursor-ring');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){
+  mx=e.clientX;my=e.clientY;
+  cursor.style.transform='translate('+(mx-6)+'px,'+(my-6)+'px)';
+});
+(function animRing(){
+  rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;
+  ring.style.transform='translate('+rx+'px,'+ry+'px)';
+  requestAnimationFrame(animRing);
+})();
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e,i){
+    if(e.isIntersecting)setTimeout(function(){e.target.classList.add('visible');},i*120);
+  });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+
+window.addEventListener('scroll',function(){
+  document.querySelector('nav').style.background=
+    window.scrollY>50?'rgba(4,4,10,0.97)':'rgba(4,4,10,0.7)';
+});
+
+var running=false;
+function runDiagnostic(){
+  if(running)return;running=true;
+  var barBad=document.getElementById('bar-bad');
+  var barGood=document.getElementById('bar-good');
+  var valBad=document.getElementById('val-bad');
+  var valGood=document.getElementById('val-good');
+  var result=document.getElementById('diag-result');
+  barBad.style.width='0%';barGood.style.width='0%';
+  valBad.textContent='0.0s';valGood.textContent='0.0s';
+  result.style.color='var(--muted)';result.textContent='Running diagnostic...';
+  var b=0,bt=4.2;
+  var bi=setInterval(function(){
+    b+=0.07;if(b>=bt){b=bt;clearInterval(bi);}
+    valBad.textContent=b.toFixed(1)+'s';
+    barBad.style.width=(b/bt*88)+'%';
+  },35);
+  setTimeout(function(){
+    var g=0,gt=0.6;
+    var gi=setInterval(function(){
+      g+=0.02;if(g>=gt){g=gt;clearInterval(gi);
+        result.textContent='Omni-Flow is 7x faster. You are losing customers right now.';
+        result.style.color='var(--cyan)';running=false;
+      }
+      valGood.textContent=g.toFixed(1)+'s';
+      barGood.style.width=(g/bt*88)+'%';
+    },20);
+  },500);
+}
+
+function copyText(t){
+  navigator.clipboard.writeText(t).then(function(){
+    var toast=document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function(){toast.classList.remove('show');},2500);
+  });
+}
+
+function sendMail(){
+  var name=document.getElementById('f-name').value.trim();
+  var email=document.getElementById('f-email').value.trim();
+  var industry=document.getElementById('f-industry').value.trim();
+  var message=document.getElementById('f-message').value.trim();
+  var subject=encodeURIComponent('New Inquiry from '+(name||'a potential client'));
+  var body=encodeURIComponent(
+    'BUSINESS NAME: '+(name||'Not provided')+'\n'+
+    'CLIENT EMAIL: '+(email||'Not provided')+'\n'+
+    'INDUSTRY: '+(industry||'Not provided')+'\n\n'+
+    'MESSAGE:\n'+(message||'No message provided')
+  );
+  window.location.href='mailto:hashemstriker@gmail.com?subject='+subject+'&body='+body;
+}
+</script>
+</body>
+</html>
